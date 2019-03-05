@@ -1,0 +1,10 @@
+struct VehicleEvent {
+    long time;
+    long date;
+    string registration_number;
+};
+
+interface CompanyHQ {
+    void raise_alarm(in VehicleEvent event);
+    void register_local_server(in string server_name, in string server_ior);
+};

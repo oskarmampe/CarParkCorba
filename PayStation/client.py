@@ -21,10 +21,10 @@ def main(argv):
 
 
     # resolve the Count object in the Naming service
-    #entryGateName =  [CosNaming.NameComponent("entryGateName", "")]
-    #entryGate = rootContext.resolve(entryGateName)  
+    #exitGateName =  [CosNaming.NameComponent("exitGateName", "")]
+    #exitGate = rootContext.resolve(exitGateName)  
  
-    print("Entry Gate in Python")
+    print("Pay Station in Python")
 
 
 if __name__ == '__main__':

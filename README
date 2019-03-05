@@ -1,0 +1,31 @@
+
+To compile python first compile any idl like so:
+	omniidl -bpython sample_idl.idl
+Then, get the ior using a naming service namely:
+	omniNames -start 1050 -always -logdir /tmp
+
+As the naming server starts it will display its IOR on the screen:  
+
+	python server.py -ORBInitRef NameService={{IOR}}
+
+For example:
+
+	python server.py -ORBInitRef NameService=IOR:000000000000002b49444c3a6f6d672e6f72672f436f734e616d696e672f4e616d696e67436f6e746578744578743a312e300000000000010000000000000096000102000000000a3132372e302e312e3100041a00000045afabcb0000000020000f424000000001000000000000000200000008526f6f74504f41000000000d544e616d65536572766963650000000000000008000000010000000114000000000000020000000100000020000000000001000100000002050100010001002000010109000000010001010000000026000000020002
+
+Similarly, for java:
+    
+compile any idl:
+    idlj -fall sample_idl.idl
+
+compile any java:
+    javac *.java sample_idl/*.java
+
+start up a naming service:
+    tnameserv -ORBInitialPort 1050
+
+    Then run:
+
+	java Server -ORBInitialPort 1050
+	
+Unlike python, you do not have to pass IOR.
+
