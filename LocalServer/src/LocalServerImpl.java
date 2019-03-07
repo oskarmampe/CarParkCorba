@@ -1,3 +1,6 @@
+import Server.LocalServerPOA;
+import Server.VehicleEvent;
+
 public class LocalServerImpl extends LocalServerPOA {
     @Override
     public String location() {
@@ -41,6 +44,6 @@ public class LocalServerImpl extends LocalServerPOA {
 
     @Override
     public void add_pay_station(String station_name, String station_ior) {
-
+        System.out.println(station_name + station_ior);
     }
 }

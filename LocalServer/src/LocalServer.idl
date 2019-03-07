@@ -1,19 +1,21 @@
-struct VehicleEvent {
-    long time;
-    long date;
-    string registration_number;
-};
+module Server{
+    struct VehicleEvent {
+        long time;
+        long date;
+        string registration_number;
+    };
 
-typedef sequence<VehicleEvent> log_of_vehicle_events;
+    typedef sequence<VehicleEvent> log_of_vehicle_events;
 
-interface LocalServer {
-    readonly attribute string location;
-    readonly attribute log_of_vehicle_events log;
-    void vehicle_in(in VehicleEvent event);
-    void vehicle_out(in VehicleEvent event);
-    boolean vehicle_in_car_park(in string registration_number);
-    long return_cash_total();
-    void add_entry_gate(in string gate_name, in string gate_ior);
-    void add_exit_gate(in string gate_name, in string gate_ior);
-    void add_pay_station(in string station_name, in string station_ior);
+    interface LocalServer {
+        readonly attribute string location;
+        readonly attribute log_of_vehicle_events log;
+        void vehicle_in(in VehicleEvent event);
+        void vehicle_out(in VehicleEvent event);
+        boolean vehicle_in_car_park(in string registration_number);
+        long return_cash_total();
+        void add_entry_gate(in string gate_name, in string gate_ior);
+        void add_exit_gate(in string gate_name, in string gate_ior);
+        void add_pay_station(in string station_name, in string station_ior);
+    };
 };

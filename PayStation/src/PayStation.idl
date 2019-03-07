@@ -1,0 +1,9 @@
+module Server {
+    interface PayStation {
+        readonly attribute string machine_name;
+        void turn_on();
+        void turn_off();
+        void reset();
+        long return_cash_total();
+    };
+};
