@@ -1,31 +1,16 @@
 #Default
 
 import sys
-from time import time
 
-from omniORB import CORBA, PortableServer
-
-import CosNaming
+from EntryGate import EntryGate
 
 def main(argv):
-    # Initialize the ORB
-    orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
-
-    # Get a reference to the Naming service                 
-    ns = orb.resolve_initial_references ("NameService");
-    rootContext = ns._narrow(CosNaming.NamingContext)
-
-    if rootContext == None : 
-        print "Failed to narrow the root naming context"
-        sys.exit(1)
-
-
-    # resolve the Count object in the Naming service
-    #entryGateName =  [CosNaming.NameComponent("entryGateName", "")]
-    #entryGate = rootContext.resolve(entryGateName)  
- 
-    print("Entry Gate in Python")
+    try:
+        eg = EntryGate("machine", sys.argv)
+        eg.turn_on()
+    except Exception as inst:
+        print(inst)
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main(sys.argv))

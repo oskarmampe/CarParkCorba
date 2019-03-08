@@ -34,12 +34,12 @@ public class LocalServerImpl extends LocalServerPOA {
 
     @Override
     public void add_entry_gate(String gate_name, String gate_ior) {
-
+        System.out.println(gate_name + gate_ior);
     }
 
     @Override
     public void add_exit_gate(String gate_name, String gate_ior) {
-
+        System.out.println(gate_name + gate_ior);
     }
 
     @Override

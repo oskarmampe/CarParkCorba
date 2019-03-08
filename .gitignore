@@ -83,4 +83,8 @@ fabric.properties
 # End of https://www.gitignore.io/api/intellij
 
 */src/Server/*
-
+.DS_Store
+*_idl*
+*.pyc
+**/*__POA/*
+**/Server/*
