@@ -1,8 +1,8 @@
 module Server {
     interface EntryGate {
         readonly attribute string machine_name;
-        void turn_on();
+        void turn_on(in string machine_name);
         void turn_off();
-        void reset();
+        void reset(in string machine_name);
     };
 };
