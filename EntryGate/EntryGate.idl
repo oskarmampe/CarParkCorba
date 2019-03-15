@@ -1,8 +1,15 @@
 module Server {
+    struct VehicleEvent {
+        long time;
+        long date;
+        string registration_number;
+    };
+
     interface EntryGate {
         readonly attribute string machine_name;
-        void turn_on(in string machine_name);
+        void turn_on(in string machine_name, in string ior);
         void turn_off();
-        void reset(in string machine_name);
+        void reset(in string machine_name, in string ior);
+        void vehicle_in(in string car_registration);
     };
 };
