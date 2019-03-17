@@ -1,5 +1,6 @@
 import Server.LocalServer;
 import Server.LocalServerHelper;
+import Server.VehicleEvent;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContextExt;
@@ -46,6 +47,7 @@ public class App {
             nameService.rebind(localServerName, cref);
 
             System.out.println("Listening for input");
+
 
             //  wait for invocations from clients
             orb.run();

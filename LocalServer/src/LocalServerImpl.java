@@ -14,12 +14,15 @@ public class LocalServerImpl extends LocalServerPOA {
 
     @Override
     public void vehicle_in(VehicleEvent event) {
-
+        VehicleEvent evt = new VehicleEvent(123, 123, "");
+        System.out.println("Vehicle In");
+        System.out.println(evt.toString());
     }
 
     @Override
     public void vehicle_out(VehicleEvent event) {
-
+        System.out.println("Vehicle In");
+        System.out.println(event.toString());
     }
 
     @Override

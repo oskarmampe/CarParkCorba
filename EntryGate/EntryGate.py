@@ -34,3 +34,4 @@ class EntryGate(Server__POA.EntryGate):
     def reset(self, new_machine_name, machine_ior):
         self.turn_off()
         self.turn_on(new_machine_name, machine_ior)
+
