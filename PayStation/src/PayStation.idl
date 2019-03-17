@@ -1,9 +1,18 @@
 module Server {
+
+    struct PayTicket {
+        string registration_number;
+        double amount;
+        long parked_for;
+        long timestamp;
+    };
+
     interface PayStation {
         readonly attribute string machine_name;
-        void turn_on();
+        readonly attribute double cash_total;
+        void turn_on(in string machine_name);
         void turn_off();
-        void reset();
-        long return_cash_total();
+        void reset(in string machine_name);
+        void pay(in string registration_number, in double amount, in long parked_for);
     };
 };

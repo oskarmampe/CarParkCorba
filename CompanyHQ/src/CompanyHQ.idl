@@ -1,10 +1,19 @@
-struct VehicleEvent {
-    long time;
-    long date;
-    string registration_number;
-};
+module Server {
+    struct VehicleEvent {
+        long timestamp;
+        string registration_number;
+    };
 
-interface CompanyHQ {
-    void raise_alarm(in VehicleEvent event);
-    void register_local_server(in string server_name, in string server_ior);
+    struct LocalServer {
+        string device_name;
+        string device_ior;
+    };
+
+    typedef sequence<LocalServer> registered_local_servers;
+
+    interface CompanyHQ {
+        readonly attribute registered_local_servers local_servers;
+        void raise_alarm(in VehicleEvent event);
+        void register_local_server(in string server_name, in string server_ior);
+    };
 };

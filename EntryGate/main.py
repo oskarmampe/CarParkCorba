@@ -1,12 +1,26 @@
 # Entry Gate entry point
 import sys
+import time
 
 from omniORB import CORBA, PortableServer, any, tcInternal
-
 import CosNaming
-
 from EntryGate import EntryGate
 import Server__POA
+
+# Struct not working
+# ve = any.to_any({'date': None, 'time': None, 'registration_number': None})
+# ve.value().date = any.to_any(123)
+# ve.value().time = any.to_any(123)
+# ve.value().registration_number = any.to_any("CORBA.Any(CORBA.TC_string, )")
+# print ve.value()
+# print ve.value().date
+# print ve.value().registration_number
+# print ve.value().time
+# ve = (654654, 123, 123)
+# in_args = [ve.typecode()]
+# out_args = [CORBA.tk_struct]
+# vehicle_in = localServer._dynamic_op("vehicle_out", in_args=in_args, out_args=None)
+# vehicle_in(ve.value())
 
 def main(argv):
     eg = None
@@ -77,19 +91,11 @@ def main(argv):
         if user_input.lower() == 've':
             registration_number = raw_input("\nType in the registration number"
                                             "of the vechicle\n")
-            ve = any.to_any({'date': None, 'time': None, 'registration_number': None})
-            ve.value().date = CORBA.Any(CORBA.TC_long, 123)
-            ve.value().time = CORBA.Any(CORBA.TC_long, 123)
-            ve.value().registration_number = CORBA.Any(CORBA.TC_string, "123")
-            print ve.value()
-            print ve.value().date
-            print ve.value().registration_number
-            print ve.value().time
-            # ve = (654654, 123, 123)
-            in_args = [ve.typecode()]
-            out_args = [CORBA.tk_struct]
-            vehicle_in = localServer._dynamic_op("vehicle_out", in_args=in_args, out_args=None)
-            vehicle_in(ve.value())
+            in_args = [CORBA.TC_string, CORBA.TC_long]
+            result = localServer. \
+                _dynamic_op("vehicle_in", in_args=in_args, out_args=None)
+            result(registration_number, int(time.time()))
+
 
         user_input = raw_input("\nPress f to turn off,"
                                "n to turn on, r to reset, or q to quit\n")

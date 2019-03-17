@@ -1,17 +1,29 @@
 module Server{
     struct VehicleEvent {
-        long time;
-        long date;
+        long timestamp;
         string registration_number;
+        boolean arrival;
+    };
+
+    enum DeviceType {entry_gate, exit_gate, paystation};
+
+    struct Device {
+        string device_name;
+        string device_ior;
+        DeviceType type;
     };
 
     typedef sequence<VehicleEvent> log_of_vehicle_events;
+    typedef sequence<string> registration_numbers;
+    typedef sequence<Device> devices;
 
     interface LocalServer {
         readonly attribute string location;
+        readonly attribute registration_numbers vehicles_inside;
         readonly attribute log_of_vehicle_events log;
-        void vehicle_in(in VehicleEvent event);
-        void vehicle_out(in VehicleEvent event);
+        readonly attribute devices all_devices;
+        void vehicle_in(in string registration_number, in long timestamp);
+        void vehicle_out(in string registration_number, in long timestamp);
         boolean vehicle_in_car_park(in string registration_number);
         long return_cash_total();
         void add_entry_gate(in string gate_name, in string gate_ior);
