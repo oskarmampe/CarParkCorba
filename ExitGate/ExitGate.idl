@@ -1,6 +1,16 @@
-interface ExitGate {
-    readonly attribute string machine_name;
-    void turn_on();
-    void turn_off();
-    void reset();
+module Server {
+    struct VehicleEvent {
+        long time;
+        long date;
+        string registration_number;
+    };
+
+    interface EntryGate {
+        readonly attribute string machine_name;
+        readonly attribute boolean turned_on;
+        void turn_on(in string machine_name, in string machine_ior);
+        void turn_off();
+        void reset(in string machine_name, in string machine_ior);
+        void vehicle_in(in string car_registration);
+    };
 };

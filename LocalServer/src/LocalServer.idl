@@ -30,7 +30,6 @@ module Server {
         void add_entry_gate(in string gate_name, in string gate_ior);
         void add_exit_gate(in string gate_name, in string gate_ior);
         void add_pay_station(in string station_name, in string station_ior);
-        void add_payment_event(in PaymentEvent event);
         void remove_device(in string device_name);
     };
 };

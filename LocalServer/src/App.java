@@ -19,7 +19,7 @@ public class App {
             rootpoa.the_POAManager().activate();
 
             // Create the localServer servant object
-            LocalServerImpl localServer = new LocalServerImpl();
+            LocalServerImpl localServer = new LocalServerImpl("Huddersfield");
 
             // get object reference from the servant
             org.omg.CORBA.Object ref = rootpoa.servant_to_reference(localServer);
