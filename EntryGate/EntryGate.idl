@@ -7,9 +7,10 @@ module Server {
 
     interface EntryGate {
         readonly attribute string machine_name;
-        void turn_on(in string machine_name, in string ior);
+        readonly attribute boolean turned_on;
+        void turn_on(in string machine_name, in string machine_ior);
         void turn_off();
-        void reset(in string machine_name, in string ior);
+        void reset(in string machine_name, in string machine_ior);
         void vehicle_in(in string car_registration);
     };
 };

@@ -1,3 +1,5 @@
+package model;
+
 import Server.PayStationPOA;
 
 public class PayStationServer extends PayStationPOA {
@@ -7,7 +9,12 @@ public class PayStationServer extends PayStationPOA {
     }
 
     @Override
-    public void turn_on() {
+    public double cash_total() {
+        return 0;
+    }
+
+    @Override
+    public void turn_on(String machine_name) {
 
     }
 
@@ -17,12 +24,12 @@ public class PayStationServer extends PayStationPOA {
     }
 
     @Override
-    public void reset() {
+    public void reset(String machine_name) {
 
     }
 
     @Override
-    public int return_cash_total() {
-        return 0;
+    public void pay(String registration_number, double amount, int parked_for) {
+
     }
 }

@@ -1,13 +1,29 @@
-import Server.PayStation;
-import Server.PayStationHelper;
-import com.sun.corba.se.impl.corba.AsynchInvoke;
+package application;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.omg.CORBA.*;
-import org.omg.CORBA.ORBPackage.*;
-import org.omg.CosNaming.*;
+import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
-public class App {
+public class App extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource("../view/main.fxml"));
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.show();
+    }
+
+
     public static void main(String[] args) {
         try {
             // Initialize the ORB
@@ -65,5 +81,6 @@ public class App {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        launch(args);
     }
 }
