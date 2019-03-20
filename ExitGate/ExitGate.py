@@ -5,7 +5,7 @@ import time
 import Server__POA
 
 
-class EntryGate(Server__POA.EntryGate):
+class ExitGate(Server__POA.ExitGate):
     def __init__(self, argv, local_server):
         self.machine_name = ""
         self.turned_on = False
@@ -18,7 +18,7 @@ class EntryGate(Server__POA.EntryGate):
             if not self.turned_on:
                 in_args = [CORBA.TC_string, CORBA.TC_string]
                 result = self.local_server._dynamic_op(
-                    "add_entry_gate", in_args=in_args, out_args=None)
+                    "add_exit_gate", in_args=in_args, out_args=None)
                 result(machine_name, machine_ior)
                 self.machine_name = machine_name
                 self.turned_on = True

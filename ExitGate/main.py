@@ -93,7 +93,7 @@ def main(argv):
         if user_input.lower() == 've':
             registration_number = raw_input("\nType in the registration number"
                                             "of the vechicle\n")
-            eg.vehicle_in(registration_number)
+            eg.vehicle_out(registration_number)
 
         user_input = raw_input("\nPress f to turn off,"
                                "n to turn on, r to reset, ve to register a"
