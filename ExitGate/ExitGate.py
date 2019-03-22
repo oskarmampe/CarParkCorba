@@ -50,9 +50,9 @@ class ExitGate(Server__POA.ExitGate):
 
     def vehicle_out(self, car_registration):
         try:
-            in_args = [CORBA.TC_string, CORBA.TC_long]
+            in_args = [CORBA.TC_string, CORBA.TC_long, CORBA.TC_string]
             result = self.local_server. \
                 _dynamic_op("vehicle_out", in_args=in_args, out_args=None)
-            result(car_registration, int(time.time()))
+            result(car_registration, int(time.time()), self.machine_name)
         except Exception as exc:
             print("Could not send data.\nError using Corba: {}").format(exc)

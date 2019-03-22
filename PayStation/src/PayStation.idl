@@ -3,8 +3,8 @@ module Server {
     struct PayTicket {
         string registration_number;
         double amount;
-        long parked_for;
         long timestamp;
+        long parked_for_timestamp;
     };
 
     interface PayStation {

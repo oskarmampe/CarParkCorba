@@ -45,9 +45,13 @@ public class LocalServerImpl extends LocalServerPOA {
     }
 
     @Override
-    public void vehicle_in(String registration_number, int timestamp) {
-        log.add(new VehicleEvent(timestamp, registration_number, true));
-        vehicles_inside.add(registration_number);
+    public void vehicle_in(String registration_number, int timestamp, String device_name) {
+        for (Device device: all_devices) {
+            if (device.device_ior.equals(device_name)) {
+                log.add(new VehicleEvent(timestamp, registration_number, true));
+                vehicles_inside.add(registration_number);
+            }
+        }
         for(VehicleEvent event : log){
             System.out.println("Arriving: " + event.arrival + ", Registration Number: " + event.registration_number + ", Time:" + event.timestamp);
         }
@@ -56,7 +60,7 @@ public class LocalServerImpl extends LocalServerPOA {
     }
 
     @Override
-    public void vehicle_out(String registration_number, int timestamp) {
+    public void vehicle_out(String registration_number, int timestamp, String device_name) {
         log.add(new VehicleEvent(timestamp, registration_number, false));
         vehicles_inside.remove(registration_number);
         for(VehicleEvent event : log){

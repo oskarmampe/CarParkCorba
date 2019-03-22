@@ -23,8 +23,8 @@ module Server {
         readonly attribute registration_numbers vehicles_inside;
         readonly attribute log_of_vehicle_events log;
         readonly attribute devices all_devices;
-        void vehicle_in(in string registration_number, in long timestamp);
-        void vehicle_out(in string registration_number, in long timestamp);
+        void vehicle_in(in string registration_number, in long timestamp, in string device_name);
+        void vehicle_out(in string registration_number, in long timestamp, in string device_name);
         boolean vehicle_in_car_park(in string registration_number);
         long return_cash_total();
         void add_entry_gate(in string gate_name, in string gate_ior);
