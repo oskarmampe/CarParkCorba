@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PayController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RegistrationController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="259.0" minWidth="10.0" prefWidth="230.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="248.0" minWidth="10.0" prefWidth="93.0" />
@@ -25,15 +25,13 @@
       <RowConstraints maxHeight="295.0" minHeight="10.0" prefHeight="281.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Text text="Plate Number: " GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-      <TextField fx:id="plateNumberTxt" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-      <Text text="Amount:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-      <TextField fx:id="amountTxt" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-      <Button onAction="#onPayClickButton" prefHeight="52.0" prefWidth="96.0" style="-fx-background-color: green; -fx-text-fill: white;" text="Pay" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
+      <Text text="Local Server: " GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+      <TextField fx:id="localServerTxt" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Text text="Machine Name:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+      <TextField fx:id="machineNameTxt" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <Button onAction="#onRegisterDeviceClickButton" prefHeight="52.0" prefWidth="96.0" style="-fx-background-color: blue; -fx-text-fill: white;" text="Connect" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="20.0" />
          </GridPane.margin></Button>
-      <Text fx:id="1" text="Time:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-      <ComboBox fx:id="timeCmb" prefHeight="27.0" prefWidth="214.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
    </children>
 </GridPane>

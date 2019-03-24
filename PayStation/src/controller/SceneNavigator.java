@@ -10,9 +10,10 @@ import java.io.IOException;
 
 public class SceneNavigator {
 
-    public static final String PATH = "../view/";
+    private static final String PATH = "../view/";
     public static final String MAIN = PATH+"main.fxml";
     public static final String REGISTRATION = PATH+"registration.fxml";
+    public static final String PAY = PATH+"pay.fxml";
     public static final String BASIC_POPUP = PATH+"popup.fxml";
 
     private static MainController mainController;

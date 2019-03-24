@@ -1,10 +1,11 @@
 module Server {
     interface PayStation {
-        readonly attribute string machine_name;
         readonly attribute double cash_total;
-        void turn_on(in string machine_name);
+        readonly attribute string machine_name;
+        readonly attribute boolean turned_on;
+        void turn_on(in string machine_name, in string machine_ior);
         void turn_off();
-        void reset(in string machine_name);
+        void reset(in string machine_name, in string machine_ior);
         void pay(in string registration_number, in double amount, in long parked_for_timestamp, in long timestamp);
         boolean check_car_in_park(in string registration_number);
     };

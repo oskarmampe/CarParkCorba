@@ -1,5 +1,8 @@
 import Server.*;
 import com.sun.jmx.snmp.Timestamp;
+import org.omg.CORBA.Any;
+import org.omg.CORBA.NamedValue;
+import org.omg.CORBA.Request;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -62,6 +65,8 @@ public class LocalServerImpl extends LocalServerPOA {
         }
         System.out.println(Arrays.toString(vehicles_inside.toArray()));
 
+
+
     }
 
     @Override
@@ -109,7 +114,9 @@ public class LocalServerImpl extends LocalServerPOA {
         all_devices.add(new Device(station_name, station_ior, paystation));
         System.out.println("added pay station: " + station_name);
         for(Device device: all_devices){
+
             System.out.println("Device Name: " + device.device_name + ", Device Type: " + device.type);
+            System.out.println("IOR: " + station_ior);
         }
     }
 

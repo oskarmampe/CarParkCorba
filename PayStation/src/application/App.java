@@ -25,6 +25,9 @@ public class App extends Application {
     public static org.omg.CORBA.Object nameService = null;
     public static org.omg.CORBA.Object localServer = null;
     public static PayStationServer payStation = null;
+    public static NamingContext nameContext = null;
+    public static NamingContextExt nameServiceExt = null;
+    public static POA rootpoa = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -86,7 +89,7 @@ public class App extends Application {
             // Initialize the ORB
             orb = ORB.init(args, null);
 
-            POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
+            rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 
             // The object name passed in on the command line
             //String name = args[0];
@@ -107,45 +110,20 @@ public class App extends Application {
                     System.out.println("Couldn't locate a Naming Service");
                     System.exit(1);
                 }
-                NamingContext nameContext = NamingContextHelper.narrow(nameService);
-                NamingContextExt nameService = NamingContextExtHelper.narrow(nameContext);
+                nameContext = NamingContextHelper.narrow(nameService);
+                nameServiceExt = NamingContextExtHelper.narrow(nameContext);
                 payStation = new PayStationServer("Huddersfield");
 
 
                 org.omg.CORBA.Object ref = rootpoa.servant_to_reference(payStation);
                 PayStation cref = PayStationHelper.narrow(ref);
+                System.out.println(cref);
                 String name = "paystationName";
-                NameComponent[] localServerName = nameService.to_name(name);
-                nameService.rebind(localServerName, cref);
-
-                // Get the local server
-                NameComponent comp = new NameComponent("localServerName", "");
-                NameComponent path[] = {comp};
-                try {
-                    localServer = nameContext.resolve(path);
-                    System.out.println("localServer = " + localServer);
-
-                    Any any1 = orb.create_any();
-                    Any any2 = orb.create_any();
-
-                    NVList arglist = orb.create_list(4);
-                    any1.insert_string("station_name");
-                    any2.insert_string("station_ior");
-                    NamedValue nvArg = arglist.add_value("station_name", any1, org.omg.CORBA.ARG_IN.value);
-                    NamedValue nvArg2 = arglist.add_value("station_ior", any2, org.omg.CORBA.ARG_IN.value);
-
-                    //CREATE RETURN VALUE
-                    //Any result = orb.create_any();
-                    //result.insert_boolean(false);
-                    //NamedValue resultVal = orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
+                NameComponent[] payStationName = nameServiceExt.to_name(name);
+                nameServiceExt.rebind(payStationName, cref);
+                System.out.println(orb.object_to_string(ref));
 
 
-                    Request req = localServer._create_request(null, "add_pay_station", arglist, null);
-                    req.invoke();
-                } catch (Exception e) {
-                    System.out.println("Error resolving name against Naming Service");
-                    e.printStackTrace();
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
