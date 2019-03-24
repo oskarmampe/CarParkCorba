@@ -1,25 +1,30 @@
 package application;
 
+import Server.PayStation;
+import Server.PayStationHelper;
 import controller.MainController;
 import controller.SceneNavigator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import model.PayStationServer;
 import org.omg.CORBA.*;
 import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.CosNaming.NameComponent;
-import org.omg.CosNaming.NamingContext;
-import org.omg.CosNaming.NamingContextHelper;
+import org.omg.CosNaming.*;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
 import java.io.IOException;
 
 public class App extends Application {
+
+    public static ORB orb = null;
+    public static org.omg.CORBA.Object nameService = null;
+    public static org.omg.CORBA.Object localServer = null;
+    public static PayStationServer payStation = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -79,8 +84,8 @@ public class App extends Application {
     public static void main(String[] args) {
         try {
             // Initialize the ORB
-            ORB orb = ORB.init(args, null);
-            org.omg.CORBA.Object ref = null;
+            orb = ORB.init(args, null);
+
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 
             // The object name passed in on the command line
@@ -89,29 +94,41 @@ public class App extends Application {
             //if (name.startsWith("corbaname") || name.startsWith("corbaloc") ||
             //        name.startsWith("IOR")) {
             //    System.out.println("Attempting to lookup " + args[0]);
-            //    ref = orb.string_to_object(name);
+            //    localServer = orb.string_to_object(name);
             //}
             // Otherwise, do a traditional Naming Service lookup using the
             // services being referenced by our local ORB
             if (false) {
             } else {
+                // Get the Name Service
                 try {
-                    ref = orb.resolve_initial_references("NameService");
+                    nameService = orb.resolve_initial_references("NameService");
                 } catch (InvalidName invN) {
                     System.out.println("Couldn't locate a Naming Service");
                     System.exit(1);
                 }
-                NamingContext nameContext = NamingContextHelper.narrow(ref);
+                NamingContext nameContext = NamingContextHelper.narrow(nameService);
+                NamingContextExt nameService = NamingContextExtHelper.narrow(nameContext);
+                payStation = new PayStationServer("Huddersfield");
+
+
+                org.omg.CORBA.Object ref = rootpoa.servant_to_reference(payStation);
+                PayStation cref = PayStationHelper.narrow(ref);
+                String name = "paystationName";
+                NameComponent[] localServerName = nameService.to_name(name);
+                nameService.rebind(localServerName, cref);
+
+                // Get the local server
                 NameComponent comp = new NameComponent("localServerName", "");
                 NameComponent path[] = {comp};
                 try {
-                    ref = nameContext.resolve(path);
-                    System.out.println("ref = " + ref);
+                    localServer = nameContext.resolve(path);
+                    System.out.println("localServer = " + localServer);
 
                     Any any1 = orb.create_any();
                     Any any2 = orb.create_any();
 
-                    NVList arglist = orb.create_list(2);
+                    NVList arglist = orb.create_list(4);
                     any1.insert_string("station_name");
                     any2.insert_string("station_ior");
                     NamedValue nvArg = arglist.add_value("station_name", any1, org.omg.CORBA.ARG_IN.value);
@@ -123,7 +140,7 @@ public class App extends Application {
                     //NamedValue resultVal = orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
 
 
-                    Request req = ref._create_request(null, "add_pay_station", arglist, null);
+                    Request req = localServer._create_request(null, "add_pay_station", arglist, null);
                     req.invoke();
                 } catch (Exception e) {
                     System.out.println("Error resolving name against Naming Service");

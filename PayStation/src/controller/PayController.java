@@ -1,11 +1,17 @@
 package controller;
 
+import application.App;
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
+
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 public class PayController {
 
@@ -14,6 +20,9 @@ public class PayController {
 
     @FXML
     TextField amountTxt;
+
+    @FXML
+    TextField plateNumberTxt;
 
     @FXML
     public void initialize() {
@@ -63,6 +72,31 @@ public class PayController {
             createPaymentEvent();
         });
         delay.play();
+
+        String time = timeCmb.getItems().get(timeCmb.getSelectionModel().getSelectedIndex());
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+
+        switch (time){
+            case "1 Hour":
+                c.add(Calendar.HOUR, 1);
+                break;
+            case "2 Hours":
+                c.add(Calendar.HOUR, 2);
+                break;
+            case "4 Hours":
+                c.add(Calendar.HOUR, 4);
+                break;
+            case "8 Hours":
+                c.add(Calendar.HOUR, 8);
+                break;
+            case "All Day":
+                c.add(Calendar.HOUR, 24);
+                break;
+        }
+        System.out.println("Current Time: " + sdf.format(System.currentTimeMillis()));
+        System.out.println("Parked for: " + sdf.format(c.getTime()));
+        App.payStation.pay(plateNumberTxt.getText(), Double.parseDouble(amountTxt.getText()), (int)(c.getTimeInMillis() / 1000L), (int) (System.currentTimeMillis() / 1000L));
     }
 
     private void createPaymentEvent() {

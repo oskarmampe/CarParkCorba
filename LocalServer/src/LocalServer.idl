@@ -14,15 +14,25 @@ module Server {
         DeviceType type;
     };
 
+
+    struct PayTicket {
+        string registration_number;
+        double amount;
+        long parked_for_timestamp;
+        long timestamp;
+    };
+
     typedef sequence<VehicleEvent> log_of_vehicle_events;
     typedef sequence<string> registration_numbers;
     typedef sequence<Device> devices;
+    typedef sequence<PayTicket> payments;
 
     interface LocalServer {
         readonly attribute string location;
         readonly attribute registration_numbers vehicles_inside;
         readonly attribute log_of_vehicle_events log;
         readonly attribute devices all_devices;
+        readonly attribute payments all_payments;
         void vehicle_in(in string registration_number, in long timestamp, in string device_name);
         void vehicle_out(in string registration_number, in long timestamp, in string device_name);
         boolean vehicle_in_car_park(in string registration_number);
@@ -31,5 +41,6 @@ module Server {
         void add_exit_gate(in string gate_name, in string gate_ior);
         void add_pay_station(in string station_name, in string station_ior);
         void remove_device(in string device_name);
+        void add_payment_event(in string registration_number, in double amount, in long parked_for_timestamp, in long timestamp);
     };
 };
