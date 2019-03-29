@@ -1,3 +1,5 @@
+package model;
+
 import Server.CompanyHQPOA;
 import Server.LocalServer;
 import Server.VehicleEvent;
