@@ -73,6 +73,12 @@ public class LocalServerImpl extends LocalServerPOA {
     public void vehicle_out(String registration_number, int timestamp, String device_name) {
         log.add(new VehicleEvent(timestamp, registration_number, false));
         vehicles_inside.remove(registration_number);
+
+        // Check if the time of entering and leaving is within ~5 minutes of each other.
+        // If it is allow, it.
+        // Otherwise send an error to HQ.
+
+        //if (System.currentTimeMillis())
         for(VehicleEvent event : log){
             System.out.println("Arriving: " + event.arrival + ", Registration Number: " + event.registration_number + ", Time:" + event.timestamp);
         }

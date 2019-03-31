@@ -1,19 +1,33 @@
 module Server {
+
+    enum DeviceType {entry_gate, exit_gate, paystation, local_server};
+
     struct VehicleEvent {
         long timestamp;
         string registration_number;
     };
 
-    struct LocalServer {
+    struct Device {
         string device_name;
         string device_ior;
+        DeviceType type;
     };
 
-    typedef sequence<LocalServer> registered_local_servers;
+     struct PayTicket {
+        string registration_number;
+        double amount;
+        long parked_for_timestamp;
+        long timestamp;
+    };
+
+    typedef sequence<Device> devices;
+
 
     interface CompanyHQ {
-        readonly attribute registered_local_servers local_servers;
-        void raise_alarm(in VehicleEvent event);
+        readonly attribute devices all_devices;
+        void raise_alarm(in VehicleEvent in_event, in VehicleEvent out_event, in PayTicket pay_ticket);
         void register_local_server(in string server_name, in string server_ior);
+        devices get_local_server_devices(in Device local_server);
+        void turn_off_device(in string device_ior);
     };
 };

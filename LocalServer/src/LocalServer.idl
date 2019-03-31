@@ -1,6 +1,6 @@
 module Server {
 
-    enum DeviceType {entry_gate, exit_gate, paystation};
+    enum DeviceType {entry_gate, exit_gate, paystation, local_server};
 
     struct VehicleEvent {
         long timestamp;

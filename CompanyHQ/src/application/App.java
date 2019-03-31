@@ -22,6 +22,9 @@ import java.io.IOException;
 
 public class App extends Application {
 
+    public static ORB orb = null;
+    public static CompanyHQImpl companyHQ =  null;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         //SETTING STAGE
@@ -80,14 +83,14 @@ public class App extends Application {
     public static void main(String[] args) {
         try {
             // Initialize the ORB
-            ORB orb = ORB.init(args, null);
+            orb = ORB.init(args, null);
 
             // get reference to rootpoa & activate the POAManager
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();
 
             // Create the CompanyHQ servant object
-            CompanyHQImpl companyHQ = new CompanyHQImpl();
+            companyHQ = new CompanyHQImpl();
 
             // get object reference from the servant
             org.omg.CORBA.Object ref = rootpoa.servant_to_reference(companyHQ);
@@ -117,7 +120,7 @@ public class App extends Application {
             System.out.println("Listening for input");
 
             //  wait for invocations from clients
-            orb.run();
+            //orb.run();
         } catch (Exception e) {
             e.printStackTrace();
         }

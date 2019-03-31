@@ -11,6 +11,7 @@ import org.omg.PortableServer.POAHelper;
 public class App {
 
     public static ORB orb = null;
+    public static org.omg.CORBA.Object companyHQ = null;
 
     public static void main(String[] args) {
         try {
@@ -49,6 +50,34 @@ public class App {
             NameComponent[] localServerName = nameService.to_name(name);
             nameService.rebind(localServerName, cref);
             System.out.println(orb.object_to_string(ref));
+
+            NameComponent comp = new NameComponent("companyHQName",  "");
+            NameComponent path[] = {comp};
+            try {
+                App.companyHQ = nameService.resolve(path);
+            } catch (Exception e) {
+                System.out.println("Error resolving name against Naming Service");
+                e.printStackTrace();
+            }
+
+            Any any1 = App.orb.create_any();
+            Any any2 = App.orb.create_any();
+
+            NVList arglist = App.orb.create_list(2);
+            System.out.println(localServer.location());
+            any1.insert_string(localServer.location());
+            any2.insert_string(orb.object_to_string(ref));
+            NamedValue nvArg = arglist.add_value("server_name", any1, org.omg.CORBA.ARG_IN.value);
+            NamedValue nvArg2 = arglist.add_value("server_ior", any2, org.omg.CORBA.ARG_IN.value);
+
+            //CREATE RETURN VALUE
+            //Any result = App.orb.create_any();
+            //result.insert_boolean(false);
+            //NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
+
+
+            Request req = App.companyHQ._create_request(null, "register_local_server", arglist, null);
+            req.invoke();
 
             System.out.println("Listening for input");
 
