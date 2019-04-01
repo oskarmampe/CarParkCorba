@@ -44,7 +44,7 @@ public class PayStationServer extends PayStationPOA {
             Any any1 = App.orb.create_any();
             Any any2 = App.orb.create_any();
 
-            NVList arglist = App.orb.create_list(4);
+            NVList arglist = App.orb.create_list(2);
             any1.insert_string(machine_name);
             any2.insert_string(machine_ior);
             NamedValue nvArg = arglist.add_value("station_name", any1, org.omg.CORBA.ARG_IN.value);

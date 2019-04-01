@@ -15,6 +15,9 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import static application.App.companyHQ;
 
 public class ListDevicesController {
@@ -91,13 +94,43 @@ public class ListDevicesController {
     @FXML
     public void onSeeFullEventLog() {
         AlarmEvent event = companyHQ.events()[eventLogList.getSelectionModel().getSelectedIndex()];
-        String popupText = "Alarm Raised by reigstration number" + event.in_event.registration_number + ", Arrival Time: ";
-        popupText += event.in_event.timestamp + ", Departure Time: " + event.out_event.timestamp;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+
+        Calendar in_event_time = null;
+        Calendar parked = null;
+        Calendar payTime = null;
+        Calendar out_event_time = null;
+
+        if (event.in_event.timestamp != -1) {
+            in_event_time = Calendar.getInstance();
+            in_event_time.setTimeInMillis((long) event.in_event.timestamp * 1000L);
+        }
+
+        if (event.pay_event.parked_for_timestamp != -1) {
+            parked = Calendar.getInstance();
+            parked.setTimeInMillis((long) event.pay_event.parked_for_timestamp * 1000L);
+        }
+
+        if (event.pay_event.timestamp != -1) {
+            payTime = Calendar.getInstance();
+            payTime.setTimeInMillis((long) event.pay_event.timestamp * 1000L);
+        }
+
+        if (event.out_event.timestamp != -1) {
+            out_event_time = Calendar.getInstance();
+            out_event_time.setTimeInMillis((long) event.out_event.timestamp * 1000L);
+        }
+
+
+        String popupText = "Alarm Raised by registration number: " + event.out_event.registration_number + ", Arrival Time: ";
+        popupText += (in_event_time != null ? sdf.format(in_event_time.getTime()) : "None") + ", Departure Time: " +
+                (out_event_time != null ? sdf.format(out_event_time.getTime()) : "None");
         if (event.pay_event == null) {
             popupText += ", Pay Event: None";
         } else {
             PayTicket ticket = event.pay_event;
-            popupText += ", Pay Time: " + ticket.timestamp + ", Parked For: " + ticket.parked_for_timestamp
+            popupText += ", Pay Time: " + (payTime != null ? sdf.format(payTime.getTime()) : "None") + ", Parked For: "
+                    + (parked != null ? sdf.format(parked.getTime()) : "None")
                     + ", Amount Paid: " + ticket.amount;
         }
 
@@ -108,7 +141,7 @@ public class ListDevicesController {
     public void onRefreshEventLogList() {
         eventLogList.getItems().clear();
         for (AlarmEvent alarm: companyHQ.events()) {
-            eventLogList.getItems().add("Plate Number: "+alarm.in_event.registration_number);
+            eventLogList.getItems().add(alarm.out_event.registration_number);
         }
     }
 
@@ -120,18 +153,23 @@ public class ListDevicesController {
     }
 
     public void getLocalServerDevices(TreeItem<String> root) {
-        Device device = getDevice(root.getValue());
-        System.out.println("Getting devices of: "+device.device_name);
-        if (device != null && device.type == DeviceType.local_server) {
-            devicesTree.getSelectionModel().clearSelection();
-            root.getChildren().clear();
-            devicesTree.setDisable(true);
-            Device[] devices = companyHQ.get_local_server_devices(device);
-            for (Device dev: devices) {
-                makeBranch(dev.device_name, root);
+        try {
+            Device device = getDevice(root.getValue());
+            System.out.println("Getting devices of: " + device.device_name);
+            if (device != null && device.type == DeviceType.local_server) {
+                devicesTree.getSelectionModel().clearSelection();
+                root.getChildren().clear();
+                devicesTree.setDisable(true);
+                Device[] devices = companyHQ.get_local_server_devices(device);
+                for (Device dev : devices) {
+                    makeBranch(dev.device_name, root);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            devicesTree.setDisable(false);
         }
-        devicesTree.setDisable(false);
     }
 
     public Device getDevice(String deviceName) {

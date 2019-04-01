@@ -79,7 +79,7 @@ public class PayController {
 
         switch (time){
             case "1 Hour":
-                c.add(Calendar.HOUR, 1);
+                c.add(Calendar.SECOND, 1);
                 break;
             case "2 Hours":
                 c.add(Calendar.HOUR, 2);

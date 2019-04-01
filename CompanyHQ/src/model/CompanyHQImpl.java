@@ -35,6 +35,7 @@ public class CompanyHQImpl extends CompanyHQPOA {
     @Override
     public void raise_alarm(VehicleEvent in_event, VehicleEvent out_event, PayTicket pay_ticket) {
         events.add(new AlarmEvent(in_event, out_event, pay_ticket));
+        System.out.println("In Event");
     }
 
     @Override
@@ -83,5 +84,9 @@ public class CompanyHQImpl extends CompanyHQPOA {
         org.omg.CORBA.Object device = App.orb.string_to_object(device_ior);
         Request req = device._create_request(null, "turn_off", null, null);
         req.invoke();
+    }
+
+    public int get_local_server_total() {
+        return 0;
     }
 }

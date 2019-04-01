@@ -1,6 +1,7 @@
 import Server.*;
 import com.sun.jmx.snmp.Timestamp;
 import org.omg.CORBA.Any;
+import org.omg.CORBA.NVList;
 import org.omg.CORBA.NamedValue;
 import org.omg.CORBA.Request;
 
@@ -10,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 
 import static Server.DeviceType.*;
 
@@ -71,12 +73,65 @@ public class LocalServerImpl extends LocalServerPOA {
 
     @Override
     public void vehicle_out(String registration_number, int timestamp, String device_name) {
-        log.add(new VehicleEvent(timestamp, registration_number, false));
+        VehicleEvent out_event = new VehicleEvent(timestamp, registration_number, false);
+        log.add(out_event);
         vehicles_inside.remove(registration_number);
 
         // Check if the time of entering and leaving is within ~5 minutes of each other.
+        // Check if the vehicle has been paid for
+        // If it has been paid for, check if its not prolonged
         // If it is allow, it.
         // Otherwise send an error to HQ.
+
+        VehicleEvent in_event = new VehicleEvent(-1, "", true);
+        PayTicket ticket = new PayTicket("", -1, -1, -1);
+
+        for (VehicleEvent event: log()) {
+            if(event.registration_number.equals(registration_number) && event.arrival) {
+                in_event = event;
+                break;
+            }
+        }
+
+        for (PayTicket pay: all_payments) {
+            if (pay.registration_number.equals(registration_number)){
+                ticket = pay;
+                break;
+            }
+        }
+
+        Date in_date = new Date(in_event.timestamp);
+        Date out_date = new Date(timestamp);
+
+        System.out.println(out_event.timestamp - in_event.timestamp);
+
+        if (out_event.timestamp - in_event.timestamp <= 5*60) {
+            System.out.println("Less than 5 minutes");
+        }
+
+        if (ticket.amount == -1 || (out_event.timestamp - in_event.timestamp > 5*60) || (ticket.timestamp - out_event.timestamp < 0)){
+            System.out.println("Sending");
+            Any any1 = App.orb.create_any();
+            Any any2 = App.orb.create_any();
+            Any any3 = App.orb.create_any();
+
+            VehicleEventHelper.insert(any1, in_event);
+            VehicleEventHelper.insert(any2, out_event);
+            PayTicketHelper.insert(any3, ticket);
+
+            NVList arglist = App.orb.create_list(3);
+
+
+            NamedValue nvArg = arglist.add_value("in_event", any1, org.omg.CORBA.ARG_IN.value);
+            NamedValue nvArg2 = arglist.add_value("out_event", any2, org.omg.CORBA.ARG_IN.value);
+            NamedValue nvArg3 = arglist.add_value("pay_ticket", any3, org.omg.CORBA.ARG_IN.value);
+
+            //NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
+
+
+            Request req = App.companyHQ._create_request(null, "raise_alarm", arglist, null);
+            req.invoke();
+        }
 
         //if (System.currentTimeMillis())
         for(VehicleEvent event : log){
