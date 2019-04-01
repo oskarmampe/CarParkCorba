@@ -8,6 +8,8 @@ import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
+import java.util.Scanner;
+
 public class App {
 
     public static ORB orb = null;
@@ -18,12 +20,17 @@ public class App {
             // Initialize the ORB
             orb = ORB.init(args, null);
 
+            //Initialise Scanner for input
+            Scanner scanner = new Scanner(System.in);
+
             // get reference to rootpoa & activate the POAManager
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();
 
             // Create the localServer servant object
-            LocalServerImpl localServer = new LocalServerImpl("Huddersfield");
+            System.out.println("Type in the location of the Local Server");
+            String name = scanner.nextLine();
+            LocalServerImpl localServer = new LocalServerImpl(name);
 
             // get object reference from the servant
             org.omg.CORBA.Object ref = rootpoa.servant_to_reference(localServer);
@@ -46,12 +53,14 @@ public class App {
             }
 
             // bind the localServer object in the Naming service
-            String name = "localServerName";
             NameComponent[] localServerName = nameService.to_name(name);
             nameService.rebind(localServerName, cref);
             System.out.println(orb.object_to_string(ref));
 
-            NameComponent comp = new NameComponent("companyHQName",  "");
+            System.out.println("\nType in the name of the company HQ to connect to");
+            String companyHqName = scanner.nextLine();
+
+            NameComponent comp = new NameComponent(companyHqName,  "");
             NameComponent path[] = {comp};
             try {
                 App.companyHQ = nameService.resolve(path);
@@ -64,7 +73,6 @@ public class App {
             Any any2 = App.orb.create_any();
 
             NVList arglist = App.orb.create_list(2);
-            System.out.println(localServer.location());
             any1.insert_string(localServer.location());
             any2.insert_string(orb.object_to_string(ref));
             NamedValue nvArg = arglist.add_value("server_name", any1, org.omg.CORBA.ARG_IN.value);

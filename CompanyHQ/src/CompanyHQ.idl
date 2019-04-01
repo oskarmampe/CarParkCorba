@@ -20,11 +20,19 @@ module Server {
         long timestamp;
     };
 
+    struct AlarmEvent {
+        VehicleEvent in_event;
+        VehicleEvent out_event;
+        PayTicket pay_event;
+    };
+
     typedef sequence<Device> devices;
+    typedef sequence<AlarmEvent> alarmed_events;
 
 
     interface CompanyHQ {
         readonly attribute devices all_devices;
+        readonly attribute alarmed_events events;
         void raise_alarm(in VehicleEvent in_event, in VehicleEvent out_event, in PayTicket pay_ticket);
         void register_local_server(in string server_name, in string server_ior);
         devices get_local_server_devices(in Device local_server);

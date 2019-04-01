@@ -11,8 +11,16 @@ import java.util.HashMap;
 
 public class CompanyHQImpl extends CompanyHQPOA {
 
+    ArrayList<AlarmEvent> events = new ArrayList<>();
     ArrayList<Device> all_devices = new ArrayList<>();
     HashMap<Device, Device[]> localServerDevices = new HashMap<>();
+
+    public Device[] getLocalServerDevices(Device device) {
+        if (device.type == DeviceType.local_server) {
+            return localServerDevices.get(device);
+        }
+        return null;
+    }
 
     @Override
     public Device[] all_devices() {
@@ -20,8 +28,13 @@ public class CompanyHQImpl extends CompanyHQPOA {
     }
 
     @Override
+    public AlarmEvent[] events() {
+        return events.toArray(new AlarmEvent[0]);
+    }
+
+    @Override
     public void raise_alarm(VehicleEvent in_event, VehicleEvent out_event, PayTicket pay_ticket) {
-        System.out.println("raised alarm");
+        events.add(new AlarmEvent(in_event, out_event, pay_ticket));
     }
 
     @Override
@@ -35,6 +48,7 @@ public class CompanyHQImpl extends CompanyHQPOA {
 
     @Override
     public Device[] get_local_server_devices(Device local_server) {
+        System.out.println("Device Name: "+local_server.device_name);
         org.omg.CORBA.Object localServer = App.orb.string_to_object(local_server.device_ior);
         Any any1 = App.orb.create_any();
         Any any2 = App.orb.create_any();
@@ -49,13 +63,19 @@ public class CompanyHQImpl extends CompanyHQPOA {
         Request req = localServer._create_request(null, "_get_all_devices", null, resultVal);
         req.invoke();
 
+        Device[] value = devicesHelper.extract(req.result().value());
+
         System.out.println("Success");
 
-        for (Device dev: devicesHelper.extract(req.result().value())) {
+        for (Device dev: value) {
             System.out.println(dev.device_name);
         }
 
-        return devicesHelper.extract(req.result().value());
+        System.out.println("End");
+
+        localServerDevices.put(local_server, value);
+
+        return value;
     }
 
     @Override
