@@ -6,23 +6,6 @@ from omniORB import CORBA, PortableServer
 import CosNaming
 from EntryGate import EntryGate
 
-# Struct not working
-# from omniORB import any
-# ve = any.to_any({'date': None, 'time': None, 'registration_number': None})
-# ve.value().date = any.to_any(123)
-# ve.value().time = any.to_any(123)
-# ve.value().registration_number = any.to_any("CORBA.Any(CORBA.TC_string, )")
-# print ve.value()
-# print ve.value().date
-# print ve.value().registration_number
-# print ve.value().time
-# ve = (654654, 123, 123)
-# in_args = [ve.typecode()]
-# out_args = [CORBA.tk_struct]
-# vehicle_in = localServer._dynamic_op(
-#    "vehicle_in", in_args=in_args, out_args=None)
-# vehicle_in(ve.value())
-
 '''
 Main Entry Point for the Entry gate application.
 Requires to run with argument -ORBInitRef NameService={{IOR}}

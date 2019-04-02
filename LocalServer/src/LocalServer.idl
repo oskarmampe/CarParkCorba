@@ -36,11 +36,11 @@ module Server {
         void vehicle_in(in string registration_number, in long timestamp, in string device_name);
         void vehicle_out(in string registration_number, in long timestamp, in string device_name);
         boolean vehicle_in_car_park(in string registration_number);
-        long return_cash_total();
+        double return_cash_total();
         void add_entry_gate(in string gate_name, in string gate_ior);
         void add_exit_gate(in string gate_name, in string gate_ior);
         void add_pay_station(in string station_name, in string station_ior);
         void remove_device(in string device_name);
-        void add_payment_event(in string registration_number, in double amount, in long parked_for_timestamp, in long timestamp);
+        void add_payment_event(in string registration_number, in double amount, in long parked_for_timestamp, in long timestamp, in string device_name);
     };
 };

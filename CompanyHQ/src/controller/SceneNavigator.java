@@ -12,7 +12,8 @@ public class SceneNavigator {
 
     public static final String PATH = "../view/";
     public static final String MAIN = PATH+"main.fxml";
-    public static final String REGISTRATION = PATH+"devices_list.fxml";
+    public static final String REGISTRATION = PATH+"registration.fxml";
+    public static final String DEVICES = PATH+"devices_list.fxml";
     public static final String BASIC_POPUP = PATH+"popup.fxml";
 
     private static MainController mainController;
@@ -43,7 +44,6 @@ public class SceneNavigator {
 
             Scene popupScene = new Scene(loader.load(SceneNavigator.class.getResource(BASIC_POPUP).openStream()));
             ((PopupController)loader.getController()).setLabelText(labelText);
-            ((PopupController)loader.getController()).okButton.setDisable(true);
             mPopupStage.setScene(popupScene);
             mPopupStage.show();
         } catch (Exception e1) {

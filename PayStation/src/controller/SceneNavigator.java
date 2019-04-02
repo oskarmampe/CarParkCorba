@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -8,6 +7,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ *
+ * SceneNavigator main.controller. This class is used to switch scenes. Holds all possible views to navigate to.
+ * @author Oskar Mampe: U1564420
+ *
+ */
 public class SceneNavigator {
 
     private static final String PATH = "../view/";
@@ -21,11 +26,22 @@ public class SceneNavigator {
     public static Stage mPrimaryStage;
     private static Stage mPopupStage;
 
+    /**
+     *
+     * Sets the main controller.
+     *
+     * @param mainController the {@link MainController} injected into main.view/main.fxml
+     */
     public static void setMainController(MainController mainController) {
         SceneNavigator.mainController = mainController;
     }
 
-
+    /**
+     *
+     * Loads an fxml view.
+     *
+     * @param fxml {@link String} resource path to the fxml file
+     */
     public static void loadScene(String fxml) {
         try {
             mainController.setScene(FXMLLoader.load(SceneNavigator.class.getResource(fxml)));
@@ -34,6 +50,12 @@ public class SceneNavigator {
         }
     }
 
+    /**
+     *
+     * Shows a basic popup window with a label.
+     *
+     * @param labelText {@link String} text of a label
+     */
     public static void showBasicPopupWindow(String labelText) {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -52,6 +74,11 @@ public class SceneNavigator {
         }
     }
 
+    /**
+     *
+     * Close the popup window.
+     *
+     */
     public static void closePopupWindow() {
         mPopupStage.close();
     }

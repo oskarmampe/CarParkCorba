@@ -8,11 +8,14 @@ import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 
+/**
+ *
+ * Pay controller, responsible for taking any inputs from the 'pay' view.
+ *
+ *
+ */
 public class PayController {
 
     @FXML
@@ -26,6 +29,7 @@ public class PayController {
 
     @FXML
     public void initialize() {
+        // All the possible times
         String[] items = {
                 "1 Hour",
                 "2 Hours",
@@ -33,6 +37,8 @@ public class PayController {
                 "8 Hours",
                 "All Day"
         };
+
+        // All the possible prices
         Double[] prices = {
                 1.6,
                 2.8,
@@ -40,6 +46,7 @@ public class PayController {
                 6.0,
                 6.5
         };
+        // Setting Combo Box
         timeCmb.getItems().setAll(items);
         timeCmb.getSelectionModel().select(0);
         timeCmb.valueProperty().addListener((composant, oldString, newString) -> {
@@ -64,12 +71,18 @@ public class PayController {
         timeCmb.getSelectionModel().select(1);
     }
 
+    /**
+     *
+     * Click handler for the pay button.
+     * Shows a temporary screen, simulating the customer actually paying.
+     * The pay method from paystation stub is then executed
+     *
+     */
     public void onPayClickButton() {
         SceneNavigator.showBasicPopupWindow("Please Pay...");
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished( event -> {
             SceneNavigator.closePopupWindow();
-            createPaymentEvent();
         });
         delay.play();
 
@@ -94,12 +107,6 @@ public class PayController {
                 c.add(Calendar.HOUR, 24);
                 break;
         }
-        System.out.println("Current Time: " + sdf.format(System.currentTimeMillis()));
-        System.out.println("Parked for: " + sdf.format(c.getTime()));
         App.payStation.pay(plateNumberTxt.getText(), Double.parseDouble(amountTxt.getText()), (int)(c.getTimeInMillis() / 1000L), (int) (System.currentTimeMillis() / 1000L));
-    }
-
-    private void createPaymentEvent() {
-
     }
 }

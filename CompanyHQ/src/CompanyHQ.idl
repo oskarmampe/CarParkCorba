@@ -37,5 +37,6 @@ module Server {
         void register_local_server(in string server_name, in string server_ior);
         devices get_local_server_devices(in Device local_server);
         void turn_off_device(in string device_ior);
+        double get_local_server_total(in string device_ior);
     };
 };

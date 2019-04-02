@@ -51,8 +51,6 @@ public class CompanyHQImpl extends CompanyHQPOA {
     public Device[] get_local_server_devices(Device local_server) {
         System.out.println("Device Name: "+local_server.device_name);
         org.omg.CORBA.Object localServer = App.orb.string_to_object(local_server.device_ior);
-        Any any1 = App.orb.create_any();
-        Any any2 = App.orb.create_any();
 
         //CREATE RETURN VALUE
         Any result = App.orb.create_any();
@@ -81,12 +79,21 @@ public class CompanyHQImpl extends CompanyHQPOA {
 
     @Override
     public void turn_off_device(String device_ior) {
+        System.out.println(device_ior);
         org.omg.CORBA.Object device = App.orb.string_to_object(device_ior);
         Request req = device._create_request(null, "turn_off", null, null);
-        req.invoke();
+        req.send_deferred();
     }
 
-    public int get_local_server_total() {
-        return 0;
+    @Override
+    public double get_local_server_total(String device_ior) {
+        org.omg.CORBA.Object device = App.orb.string_to_object(device_ior);
+        Any result = App.orb.create_any();
+        result.insert_double(0.0);
+        NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
+
+        Request req = device._create_request(null, "return_cash_total", null, resultVal);
+        req.invoke();
+        return req.result().value().extract_double();
     }
 }

@@ -1,6 +1,5 @@
 import Server.LocalServer;
 import Server.LocalServerHelper;
-import Server.VehicleEvent;
 import org.omg.CORBA.*;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContextExt;
@@ -10,6 +9,13 @@ import org.omg.PortableServer.POAHelper;
 
 import java.util.Scanner;
 
+/**
+ *
+ * Main entry point of the application.
+ *
+ * @author Oskar Mampe U1564420
+ *
+ */
 public class App {
 
     public static ORB orb = null;
@@ -57,9 +63,11 @@ public class App {
             nameService.rebind(localServerName, cref);
             System.out.println(orb.object_to_string(ref));
 
+            // Get the company hq name to connect to
             System.out.println("\nType in the name of the company HQ to connect to");
             String companyHqName = scanner.nextLine();
 
+            // Connect to the company hq
             NameComponent comp = new NameComponent(companyHqName,  "");
             NameComponent path[] = {comp};
             try {
@@ -69,42 +77,28 @@ public class App {
                 e.printStackTrace();
             }
 
+            // Create anys to hold the value
             Any any1 = App.orb.create_any();
             Any any2 = App.orb.create_any();
 
+            // Create the list that represesnts the arguments of the function
             NVList arglist = App.orb.create_list(2);
+
+            // Store the values in any
             any1.insert_string(localServer.location());
             any2.insert_string(orb.object_to_string(ref));
+
+            // Create named values, representing any parameters that need to be passed.
             NamedValue nvArg = arglist.add_value("server_name", any1, org.omg.CORBA.ARG_IN.value);
             NamedValue nvArg2 = arglist.add_value("server_ior", any2, org.omg.CORBA.ARG_IN.value);
 
-            //CREATE RETURN VALUE
-            //Any result = App.orb.create_any();
-            //result.insert_boolean(false);
-            //NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
-
-
+            // Create the actual request to send
             Request req = App.companyHQ._create_request(null, "register_local_server", arglist, null);
+
+            // Invoke the request
             req.invoke();
 
             System.out.println("Listening for input");
-
-
-//            try {
-//                org.omg.CORBA.Object server_ref = App.orb.string_to_object("IOR:000000000000001a49444c3a5365727665722f50617953746174696f6e3a312e30000000000000010000000000000082000102000000000a3132372e302e312e3100a3c900000031afabcb0000000020b1c09d5800000001000000000000000100000008526f6f74504f410000000008000000010000000014000000000000020000000100000020000000000001000100000002050100010001002000010109000000010001010000000026000000020002");
-//                //CREATE RETURN VALUE
-//                Any result = App.orb.create_any();
-//                result.insert_string("");
-//                NamedValue resultVal = App.orb.create_named_value("machine_name", result, org.omg.CORBA.ARG_OUT.value);
-//
-//
-//                Request req = server_ref._create_request(null, "machine_name", null, resultVal);
-//                req.invoke();
-//                System.out.println(req.result().value().extract_string());
-//            } catch (Exception e){
-//                e.printStackTrace();
-//            }
-
 
             //  wait for invocations from clients
             orb.run();

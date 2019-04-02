@@ -34,6 +34,9 @@ public class ListDevicesController {
     @FXML
     Label selectedItemLabel;
 
+    @FXML
+    Button getTotalButton;
+
     private TreeItem<String> root;
 
     @FXML
@@ -53,8 +56,10 @@ public class ListDevicesController {
             System.out.println(treeItem.getValue());
             if(device == null || device.type == DeviceType.local_server) {
                 turnOffButton.setVisible(false);
+                getTotalButton.setVisible(true);
             } else {
                 turnOffButton.setVisible(true);
+                getTotalButton.setVisible(false);
             }
 
             if (treeItem.getChildren().size() == 0 && device.type == DeviceType.local_server)
@@ -87,6 +92,7 @@ public class ListDevicesController {
         Device device = getDevice(item.getValue());
         if (device != null && device.type != DeviceType.local_server) {
             companyHQ.turn_off_device(device.device_ior);
+            devicesTree.getSelectionModel().clearSelection();
             item.getParent().getChildren().remove(item);
         }
     }
@@ -188,6 +194,16 @@ public class ListDevicesController {
             }
         }
         return null;
+    }
+
+    @FXML
+    public void onShowLocalTotal() {
+        TreeItem<String> item = (TreeItem<String>) devicesTree.getSelectionModel().getSelectedItem();
+        Device device = getDevice(item.getValue());
+
+        String popupText = "The total is: ";
+        popupText += Double.toString(companyHQ.get_local_server_total(device.device_ior));
+        SceneNavigator.showBasicPopupWindow(popupText);
     }
 
 }

@@ -7,8 +7,7 @@ import javafx.scene.layout.StackPane;
 /**
  *
  * Main controller. This is injected using JavaFX from view/main.fxml
- * Author: Oskar Mampe: U1564420
- * Date: 10/03/2019
+ * @author Oskar Mampe: U1564420
  *
  */
 public class MainController {

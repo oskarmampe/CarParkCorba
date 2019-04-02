@@ -7,27 +7,27 @@ import org.omg.CORBA.NVList;
 import org.omg.CORBA.NamedValue;
 import org.omg.CORBA.Request;
 
+/**
+ *
+ * The implemention of the IDL PayStation.
+ *
+ * @author Oskar Mampe U1564420
+ *
+ */
 public class PayStationServer extends PayStationPOA {
 
-    String machine_name;
-    double amount;
-    boolean turned_on = false;
+    private String machine_name;
+    private double amount;
+    private boolean turned_on = false;
 
     public PayStationServer(String machine_name) {
         this.machine_name = machine_name;
         amount = 0.0;
     }
 
-
     @Override
     public String machine_name() {
-        try {
-            System.out.println("hello");
-            return "hello";
-        } catch (Exception e){
-            e.printStackTrace();
-            return "";
-        }
+        return machine_name;
 
     }
 
@@ -38,25 +38,27 @@ public class PayStationServer extends PayStationPOA {
 
     @Override
     public void turn_on(String machine_name, String machine_ior) {
+        // Creates a DII request
         try {
-            System.out.println("App.localServer = " + App.localServer);
-
+            // Create two anys to hold the values
             Any any1 = App.orb.create_any();
             Any any2 = App.orb.create_any();
 
+            // Create the list that represesnts the arguments of the function
             NVList arglist = App.orb.create_list(2);
+
+            // Store the values in any
             any1.insert_string(machine_name);
             any2.insert_string(machine_ior);
+
+            // Create named values, representing any parameters that need to be passed.
             NamedValue nvArg = arglist.add_value("station_name", any1, org.omg.CORBA.ARG_IN.value);
             NamedValue nvArg2 = arglist.add_value("station_ior", any2, org.omg.CORBA.ARG_IN.value);
 
-            //CREATE RETURN VALUE
-            //Any result = App.orb.create_any();
-            //result.insert_boolean(false);
-            //NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
-
-
+            // Create the actual request to send
             Request req = App.localServer._create_request(null, "add_pay_station", arglist, null);
+
+            // Invoke the request
             req.invoke();
             turned_on = true;
             this.machine_name = machine_name;
@@ -75,21 +77,25 @@ public class PayStationServer extends PayStationPOA {
     @Override
     public void turn_off() {
         try {
-            System.out.println("App.localServer = " + App.localServer);
 
+            System.out.println("Sending");
+
+            // Create any to hold the value
             Any any1 = App.orb.create_any();
 
-            NVList arglist = App.orb.create_list(4);
+            // Create the list that represesnts the arguments of the function
+            NVList arglist = App.orb.create_list(1);
+
+            // Store the values in any
             any1.insert_string(this.machine_name());
+
+            // Create named values, representing any parameters that need to be passed.
             NamedValue nvArg = arglist.add_value("device_name", any1, org.omg.CORBA.ARG_IN.value);
 
-            //CREATE RETURN VALUE
-            //Any result = App.orb.create_any();
-            //result.insert_boolean(false);
-            //NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
-
-
+            // Create the actual request to send
             Request req = App.localServer._create_request(null, "remove_device", arglist, null);
+
+            // Invoke the request
             req.invoke();
             turned_on = true;
         } catch (Exception e) {
@@ -109,29 +115,35 @@ public class PayStationServer extends PayStationPOA {
         System.out.println(App.localServer);
         if(check_car_in_park(registration_number)) {
             try {
+
+                // Create anys to hold the value
                 Any any1 = App.orb.create_any();
                 Any any2 = App.orb.create_any();
                 Any any3 = App.orb.create_any();
                 Any any4 = App.orb.create_any();
+                Any any5 = App.orb.create_any();
 
+                // Create the list that represesnts the arguments of the function
+                NVList arglist = App.orb.create_list(5);
 
-                NVList arglist = App.orb.create_list(2);
+                // Store the values in anys
                 any1.insert_string(registration_number);
                 any2.insert_double(amount);
                 any3.insert_long(parked_for_timestamp);
                 any4.insert_long(timestamp);
+                any5.insert_string(this.machine_name);
+
+                // Create named values, representing any parameters that need to be passed.
                 NamedValue nvArg = arglist.add_value("registration_number", any1, org.omg.CORBA.ARG_IN.value);
                 NamedValue nvArg2 = arglist.add_value("amount", any2, org.omg.CORBA.ARG_IN.value);
                 NamedValue nvArg3 = arglist.add_value("parked_for_timestamp", any3, org.omg.CORBA.ARG_IN.value);
                 NamedValue nvArg4 = arglist.add_value("timestamp", any4, org.omg.CORBA.ARG_IN.value);
+                NamedValue nvArg5 = arglist.add_value("device_name", any5, org.omg.CORBA.ARG_IN.value);
 
-                //CREATE RETURN VALUE
-                //Any result = App.orb.create_any();
-                //result.insert_boolean(false);
-                //NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
-
-
+                // Create the actual request to send
                 Request req = App.localServer._create_request(null, "add_payment_event", arglist, null);
+
+                // Invoke the request
                 req.invoke();
                 this.amount += amount;
             } catch (Exception e) {
@@ -146,23 +158,35 @@ public class PayStationServer extends PayStationPOA {
     @Override
     public boolean check_car_in_park(String registration_number) {
         try {
+
+            // Create any to hold the value
             Any any1 = App.orb.create_any();
 
+            // Create the list that represesnts the arguments of the function
+            NVList arglist = App.orb.create_list(1);
 
-            NVList arglist = App.orb.create_list(2);
+            // Store the values in anys
             any1.insert_string(registration_number);
+
+            // Create named values, representing any parameters that need to be passed.
             NamedValue nvArg = arglist.add_value("registration_number", any1, org.omg.CORBA.ARG_IN.value);
 
-            //CREATE RETURN VALUE
+            //Create any to hold the result value
             Any result = App.orb.create_any();
+
+            // Store the values in anys
             result.insert_boolean(false);
+
+            // Create named values, representing any results that will be returned.
             NamedValue resultVal = App.orb.create_named_value("result", result, org.omg.CORBA.ARG_OUT.value);
 
-
+            // Create the actual request to send
             Request req = App.localServer._create_request(null, "vehicle_in_car_park", arglist, resultVal);
+
+            // Invoke the request
             req.invoke();
 
-            return req.result().value().extract_boolean();
+            return req.result().value().extract_boolean(); // return the value that was returned from the call.
 
         } catch (Exception e) {
             System.out.println("Error sending the checking car in park request");
