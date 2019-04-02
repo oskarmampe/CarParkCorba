@@ -52,18 +52,20 @@ public class ListDevicesController {
 
         devicesTree.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             TreeItem<String> treeItem = (TreeItem<String>) newValue;
-            Device device = getDevice(treeItem.getValue());
-            System.out.println(treeItem.getValue());
-            if(device == null || device.type == DeviceType.local_server) {
-                turnOffButton.setVisible(false);
-                getTotalButton.setVisible(true);
-            } else {
-                turnOffButton.setVisible(true);
-                getTotalButton.setVisible(false);
-            }
+            if (treeItem != null && treeItem.getValue() != null) {
+                Device device = getDevice(treeItem.getValue());
+                System.out.println(treeItem.getValue());
+                if (device == null || device.type == DeviceType.local_server) {
+                    turnOffButton.setVisible(false);
+                    getTotalButton.setVisible(true);
+                } else {
+                    turnOffButton.setVisible(true);
+                    getTotalButton.setVisible(false);
+                }
 
-            if (treeItem.getChildren().size() == 0 && device.type == DeviceType.local_server)
-                getLocalServerDevices(treeItem);
+                if (treeItem.getChildren().size() == 0 && device.type == DeviceType.local_server)
+                    getLocalServerDevices(treeItem);
+            }
         });
     }
 

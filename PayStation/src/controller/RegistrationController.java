@@ -41,6 +41,7 @@ public class RegistrationController {
 
             // Get the rootpoa
             POA rootpoa = POAHelper.narrow(App.orb.resolve_initial_references("RootPOA"));
+            rootpoa.the_POAManager().activate();
 
             // Get the Name Service
             org.omg.CORBA.Object nameService = null;
