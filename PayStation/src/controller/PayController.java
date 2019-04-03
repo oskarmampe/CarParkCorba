@@ -109,4 +109,14 @@ public class PayController {
         }
         App.payStation.pay(plateNumberTxt.getText(), Double.parseDouble(amountTxt.getText()), (int)(c.getTimeInMillis() / 1000L), (int) (System.currentTimeMillis() / 1000L));
     }
+
+    @FXML
+    public void onResetDevice() {
+        SceneNavigator.showPopupWindow(SceneNavigator.RESET_POPUP);
+    }
+
+    @FXML
+    public void onTurnOffDevice() {
+        App.payStation.turn_off();
+    }
 }

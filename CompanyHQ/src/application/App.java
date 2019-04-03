@@ -1,25 +1,27 @@
 package application;
 
-import Server.CompanyHQ;
-import Server.CompanyHQHelper;
 import controller.MainController;
 import controller.SceneNavigator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.CompanyHQImpl;
 import org.omg.CORBA.*;
-import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.CosNaming.*;
-import org.omg.PortableServer.POA;
-import org.omg.PortableServer.POAHelper;
 
 import java.io.IOException;
 
+/**
+ *
+ * Main entry point for the application. Contains CORBA initialisation, including orb and naming service. Also registers
+ * local server object with the POA. Further, initialises any JavaFX components.
+ *
+ *
+ * @author Oskar Mampe U1564420
+ *
+ */
 public class App extends Application {
 
     public static ORB orb = null;
@@ -77,9 +79,12 @@ public class App extends Application {
         return scene;
     }
 
-
-
-
+    /**
+     *
+     * Main function. Initialises the orb and launches the FXML.
+     *
+     * @param args String[] which represent anything passed by console.
+     */
     public static void main(String[] args) {
         try {
             // Initialize the ORB

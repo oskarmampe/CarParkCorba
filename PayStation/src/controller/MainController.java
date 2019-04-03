@@ -22,6 +22,5 @@ public class MainController {
      */
     public void setScene(Pane node) {
         paneHolder.getChildren().setAll(node);
-        //scene.getStylesheets().setAll(getClass().getResource("style.css").toExternalForm());
     }
 }

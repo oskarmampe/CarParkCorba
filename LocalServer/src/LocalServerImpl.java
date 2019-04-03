@@ -118,7 +118,10 @@ public class LocalServerImpl extends LocalServerPOA {
         }
 
         // If the ticket is not found, the user stayed more than 5 minutes or the user overstayed, send an alarm to HQ
-        if (ticket.amount == -1 || (out_event.timestamp - in_event.timestamp > 5*60) || (ticket.timestamp - out_event.timestamp < 0)){
+        System.out.println(((out_event.timestamp - in_event.timestamp > 5*60) && ticket.timestamp == -1));
+        System.out.println((ticket.timestamp - out_event.timestamp));
+        System.out.println((ticket.timestamp - out_event.timestamp < 0));
+        if (ticket.amount == -1 || ((out_event.timestamp - in_event.timestamp > 5*60) && ticket.parked_for_timestamp == -1) || (ticket.parked_for_timestamp - out_event.timestamp <  0)){
 
             // Create anys to hold the value
             Any any1 = App.orb.create_any();

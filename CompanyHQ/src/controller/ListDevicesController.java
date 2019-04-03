@@ -4,22 +4,21 @@ import Server.AlarmEvent;
 import Server.Device;
 import Server.DeviceType;
 import Server.PayTicket;
-import application.App;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.util.Callback;
-import javafx.util.Duration;
-import javafx.util.StringConverter;
-import javafx.util.converter.DefaultStringConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static application.App.companyHQ;
 
+/**
+ *
+ * List Devices controller responsible for taking any inputs from the 'devices_list' view.
+ *
+ * @author Oskar Mampe
+ *
+ */
 public class ListDevicesController {
 
     @FXML
@@ -47,22 +46,45 @@ public class ListDevicesController {
         devicesTree.setRoot(root);
         devicesTree.setShowRoot(false);
 
-        onRefreshLocalServer();
+        onRefreshLocalServer(); // Show any local servers already connected
 
-
+        // Add a listener when the user presses on a list item, load all the devices connected to the server
+        // Otherwise, show appropriate buttons, depending on what the user selected
         devicesTree.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             TreeItem<String> treeItem = (TreeItem<String>) newValue;
             if (treeItem != null && treeItem.getValue() != null) {
                 Device device = getDevice(treeItem.getValue());
-                System.out.println(treeItem.getValue());
                 if (device == null || device.type == DeviceType.local_server) {
+                    // If device is a local server, allow to get total earned today
                     turnOffButton.setVisible(false);
                     getTotalButton.setVisible(true);
                 } else {
+                    // If device is not a local server, allow to turn it off
                     turnOffButton.setVisible(true);
                     getTotalButton.setVisible(false);
                 }
 
+
+                if (device != null) {
+                    String deviceType = "";
+                    if (device.type == DeviceType.local_server) {
+                        deviceType = "Local Server";
+                    } else if (device.type == DeviceType.paystation){
+                        deviceType = "Pay Station";
+                    } else if (device.type == DeviceType.entry_gate){
+                        deviceType = "Entry Gate";
+                    } else if (device.type == DeviceType.exit_gate) {
+                        deviceType = "Exit Gate";
+                    } else {
+                        deviceType = "N/A";
+                    }
+
+                    selectedItemLabel.setText("Selected: " + device.device_name + " Type: " + deviceType);
+                } else {
+                    selectedItemLabel.setText("Selected: N/A Type: N/A");
+                }
+
+                // If a local server doesn't have children, allow to retrieve them
                 if (treeItem.getChildren().size() == 0 && device.type == DeviceType.local_server)
                     getLocalServerDevices(treeItem);
             }
@@ -72,7 +94,6 @@ public class ListDevicesController {
     @FXML
     void onRefreshDevice() {
         TreeItem<String> item = (TreeItem<String>) devicesTree.getSelectionModel().getSelectedItem();
-        TreeItem<String> parent = item.getParent();
         Device device = getDevice(item.getValue());
         if (device != null) {
             getLocalServerDevices(device.type == DeviceType.local_server ? item : item.getParent());
@@ -81,6 +102,7 @@ public class ListDevicesController {
 
     @FXML
     void onRefreshLocalServer() {
+        root.getChildren().clear();
         for (Device device: companyHQ.all_devices()) {
             if(device.type == DeviceType.local_server) {
                 makeBranch(device.device_name, root);
@@ -94,7 +116,7 @@ public class ListDevicesController {
         Device device = getDevice(item.getValue());
         if (device != null && device.type != DeviceType.local_server) {
             companyHQ.turn_off_device(device.device_ior);
-            devicesTree.getSelectionModel().clearSelection();
+            devicesTree.getSelectionModel().clearSelection(); // Clear the selection first to avoid any weird visuals
             item.getParent().getChildren().remove(item);
         }
     }
@@ -109,6 +131,10 @@ public class ListDevicesController {
         Calendar payTime = null;
         Calendar out_event_time = null;
 
+        // If a time doesn't exist, the server sends -1 instead of null, as sending null from CORBA caused some issues.
+        // Therefore, if a user has not parked, then both parked_timestamp and timestamp will be -1
+        // This will cause errors when parsing it as a timestamp date.
+        // Therefore check for these errors to avoid any crashes.
         if (event.in_event.timestamp != -1) {
             in_event_time = Calendar.getInstance();
             in_event_time.setTimeInMillis((long) event.in_event.timestamp * 1000L);
@@ -129,7 +155,7 @@ public class ListDevicesController {
             out_event_time.setTimeInMillis((long) event.out_event.timestamp * 1000L);
         }
 
-
+        // popup text is text parsed to the popup to be displayed as a label.
         String popupText = "Alarm Raised by registration number: " + event.out_event.registration_number + ", Arrival Time: ";
         popupText += (in_event_time != null ? sdf.format(in_event_time.getTime()) : "None") + ", Departure Time: " +
                 (out_event_time != null ? sdf.format(out_event_time.getTime()) : "None");
@@ -148,22 +174,48 @@ public class ListDevicesController {
     @FXML
     public void onRefreshEventLogList() {
         eventLogList.getItems().clear();
-        for (AlarmEvent alarm: companyHQ.events()) {
+        for (AlarmEvent alarm: companyHQ.events())
             eventLogList.getItems().add(alarm.out_event.registration_number);
-        }
     }
 
-    public TreeItem<String> makeBranch(String device, TreeItem<String> parent) {
+    @FXML
+    public void onShowLocalTotal() {
+        TreeItem<String> item = (TreeItem<String>) devicesTree.getSelectionModel().getSelectedItem();
+        Device device = getDevice(item.getValue());
+        String popupText;
+
+        if (device != null) {
+            popupText = "The total is: ";
+            popupText += Double.toString(companyHQ.get_local_server_total(device.device_ior));
+        } else {
+            popupText = "Error.";
+        }
+
+        SceneNavigator.showBasicPopupWindow(popupText);
+    }
+
+    /**
+     *
+     * JavaFX method to create a branch on the root.
+     *
+     * @param device Device to get added to the root
+     * @param parent TreeItem root to have its children appended
+     */
+    private void makeBranch(String device, TreeItem<String> parent) {
         TreeItem<String> item = new TreeItem<String>(device);
         item.setExpanded(true);
         parent.getChildren().add(item);
-        return item;
     }
 
-    public void getLocalServerDevices(TreeItem<String> root) {
+    /**
+     *
+     *  Method that clears any children of a local server root, and then gets all devices connected.
+     *
+     * @param root TreeItem the element that holds the local server
+     */
+    private void getLocalServerDevices(TreeItem<String> root) {
         try {
             Device device = getDevice(root.getValue());
-            System.out.println("Getting devices of: " + device.device_name);
             if (device != null && device.type == DeviceType.local_server) {
                 devicesTree.getSelectionModel().clearSelection();
                 root.getChildren().clear();
@@ -180,7 +232,14 @@ public class ListDevicesController {
         }
     }
 
-    public Device getDevice(String deviceName) {
+    /**
+     *
+     * Takes in a device name and retrieves the appropriate Device object.
+     *
+     * @param deviceName the device name of Device
+     * @return Device connected to the local server or company hq
+     */
+    private Device getDevice(String deviceName) {
         for (Device device: companyHQ.all_devices()) {
             if(device.device_name.equals(deviceName)) {
                 return device;
@@ -197,17 +256,6 @@ public class ListDevicesController {
         }
         return null;
     }
-
-    @FXML
-    public void onShowLocalTotal() {
-        TreeItem<String> item = (TreeItem<String>) devicesTree.getSelectionModel().getSelectedItem();
-        Device device = getDevice(item.getValue());
-
-        String popupText = "The total is: ";
-        popupText += Double.toString(companyHQ.get_local_server_total(device.device_ior));
-        SceneNavigator.showBasicPopupWindow(popupText);
-    }
-
 }
 
 

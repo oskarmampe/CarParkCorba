@@ -59,6 +59,7 @@ public class RegistrationController {
 
             // Create the paystation object.
             payStation = new PayStationServer(machine_name);
+            payStation.ior = rootpoa.servant_to_reference(payStation).toString();
 
             // Narrow the object so that it can be registered as a components that is widely understood by CORBA
             PayStation cref = PayStationHelper.narrow(rootpoa.servant_to_reference(payStation));
@@ -74,9 +75,11 @@ public class RegistrationController {
 
             App.localServer = nameContext.resolve(path);
 
-            App.payStation.turn_on(machine_name, rootpoa.servant_to_reference(payStation).toString());
-
-            SceneNavigator.loadScene(SceneNavigator.PAY);
+            try {
+                App.payStation.turn_on(machine_name, rootpoa.servant_to_reference(payStation).toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             System.out.println("Error resolving name against Naming Service");
             e.printStackTrace();

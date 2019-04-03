@@ -2,6 +2,7 @@ package model;
 
 import Server.PayStationPOA;
 import application.App;
+import controller.SceneNavigator;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NVList;
 import org.omg.CORBA.NamedValue;
@@ -19,6 +20,7 @@ public class PayStationServer extends PayStationPOA {
     private String machine_name;
     private double amount;
     private boolean turned_on = false;
+    public String ior;
 
     public PayStationServer(String machine_name) {
         this.machine_name = machine_name;
@@ -62,6 +64,7 @@ public class PayStationServer extends PayStationPOA {
             req.invoke();
             turned_on = true;
             this.machine_name = machine_name;
+            SceneNavigator.loadScene(SceneNavigator.PAY);
         } catch (Exception e) {
             System.out.println("Error sending the turn on request");
             e.printStackTrace();
@@ -97,7 +100,8 @@ public class PayStationServer extends PayStationPOA {
 
             // Invoke the request
             req.invoke();
-            turned_on = true;
+            turned_on = false;
+            SceneNavigator.loadScene(SceneNavigator.REGISTRATION);
         } catch (Exception e) {
             System.out.println("Error sending the turn off request");
             e.printStackTrace();

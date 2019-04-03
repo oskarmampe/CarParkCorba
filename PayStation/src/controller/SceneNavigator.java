@@ -20,6 +20,7 @@ public class SceneNavigator {
     public static final String REGISTRATION = PATH+"registration.fxml";
     public static final String PAY = PATH+"pay.fxml";
     public static final String BASIC_POPUP = PATH+"popup.fxml";
+    public static final String RESET_POPUP = PATH+"popup_reset.fxml";
 
     private static MainController mainController;
 
@@ -81,5 +82,27 @@ public class SceneNavigator {
      */
     public static void closePopupWindow() {
         mPopupStage.close();
+    }
+
+    /**
+     *
+     * Show a popup window.
+     *
+     * @param fxml {@link String} resource path to the fxml file
+     */
+    public static void showPopupWindow(String fxml) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+
+            mPopupStage = new Stage();
+            mPopupStage.setResizable(false);
+            mPopupStage.initModality(Modality.APPLICATION_MODAL);
+
+            Scene popupScene = new Scene(loader.load(SceneNavigator.class.getResource(fxml).openStream()));
+            mPopupStage.setScene(popupScene);
+            mPopupStage.show();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 }
