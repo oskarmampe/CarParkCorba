@@ -1,10 +1,4 @@
 module Server {
-    struct VehicleEvent {
-        long time;
-        long date;
-        string registration_number;
-    };
-
     interface EntryGate {
         readonly attribute string machine_name;
         readonly attribute boolean turned_on;
